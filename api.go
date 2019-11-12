@@ -17,6 +17,7 @@ func main() {
 }
 
 func initMiddlewares(router *gin.Engine) {
+	router.Use(setCORS)
 	router.Use(optionHandler)
 	router.Use(gin.Recovery())
 }
@@ -35,4 +36,16 @@ func optionHandler(context *gin.Context) {
 	}
 
 	context.Next()
+}
+
+func setCORS(context *gin.Context) {
+	setContextHeader(context, "Access-Control-Allow-Origin", "*")
+	setContextHeader(context, "Access-Control-Allow-Credentials", "true")
+	setContextHeader(context, "Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, ApiKey")
+	setContextHeader(context, "Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+	context.Next()
+}
+
+func setContextHeader(context *gin.Context, key string, value string) {
+	context.Writer.Header().Set(key, value)
 }
